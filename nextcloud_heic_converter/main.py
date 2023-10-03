@@ -37,7 +37,7 @@ def expand_directory(folder, client):
         else:
             files.append(file)
 
-    return [x.get("path") for x in file_list if not x.get("isdir")]
+    return [x for x in files if not x.get("isdir")]
 
 def download_file(remote_path, local_path, client):
     return client.download_sync(remote_path=remote_path, local_path=local_path)
@@ -70,7 +70,9 @@ def main():
     folder = os.getenv("NEXTCLOUD_FOLDER")
     assert folder
 
-    files = [x for x in expand_directory(folder, client) if get_file_extension(x) == "heic"]
+    files = expand_directory(folder, client)
+    files = [sanitize_path(x["path"]) for x in  files]
+    files = [x for x in  files if get_file_extension(x) == "heic"]
     logging.info(f"Going to do {len(files)}")
 
     for f in files:
@@ -79,7 +81,7 @@ def main():
             new_file = convert_file(temp_file.name)
             new_remote_path = change_file_extension(f, "jpg")
             logging.info(f"Converting {f} to {new_remote_path}")
-            upload_file(new_remote_path, temp_file.name, client)
+            upload_file(new_remote_path, new_file, client)
             delete_file(f, client)
 
 if __name__ == "__main__":
