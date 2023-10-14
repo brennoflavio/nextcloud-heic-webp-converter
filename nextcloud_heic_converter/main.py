@@ -1,4 +1,3 @@
-import logging
 from webdav3.client import Client
 from tempfile import NamedTemporaryFile
 from dotenv import load_dotenv
@@ -6,9 +5,9 @@ import os
 from urllib.parse import urlparse
 from tempfile import NamedTemporaryFile
 import subprocess
+import sys
 
 load_dotenv()
-logging.basicConfig(level=logging.INFO)
 
 def get_client():
     options = {
@@ -59,7 +58,6 @@ def get_file_extension(file_path):
     return ext[1:]
 
 def convert_file(heic_file):
-    logging.info(f"Converting {heic_file}")
     subprocess.run(["heic2jpg", "-s", heic_file, "--keep"])
     return change_file_extension(heic_file, "jpg")
 
@@ -73,14 +71,12 @@ def main():
     files = expand_directory(folder, client)
     files = [sanitize_path(x["path"]) for x in  files]
     files = [x for x in  files if get_file_extension(x) == "heic"]
-    logging.info(f"Going to do {len(files)}")
 
     for f in files:
         with NamedTemporaryFile("w+", suffix=".heic") as temp_file:
             download_file(f, temp_file.name, client)
             new_file = convert_file(temp_file.name)
             new_remote_path = change_file_extension(f, "jpg")
-            logging.info(f"Converting {f} to {new_remote_path}")
             upload_file(new_remote_path, new_file, client)
             delete_file(f, client)
 
