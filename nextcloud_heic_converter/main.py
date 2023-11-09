@@ -42,6 +42,9 @@ def expand_directory(folder, client):
 def download_file(remote_path, local_path, client):
     return client.download_sync(remote_path=remote_path, local_path=local_path)
 
+def check_file(remote_path, client):
+    return client.check(remote_path)
+
 def upload_file(remote_path, local_path, client):
     return client.upload_sync(remote_path=remote_path, local_path=local_path)
 
@@ -76,6 +79,9 @@ def main():
     logging.info(f"Going to do {len(files)}")
 
     for f in files:
+        if not check_file(f):
+            continue
+
         with NamedTemporaryFile("w+", suffix=".heic") as temp_file:
             download_file(f, temp_file.name, client)
             new_file = convert_file(temp_file.name)
