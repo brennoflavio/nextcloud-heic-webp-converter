@@ -76,7 +76,7 @@ def main():
     files = [x for x in  files if get_file_extension(x) == "heic"]
 
     for f in files:
-        if not check_file(f):
+        if not check_file(f, client):
             continue
 
         with NamedTemporaryFile("w+", suffix=".heic") as temp_file:
