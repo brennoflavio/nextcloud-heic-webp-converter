@@ -1,13 +1,9 @@
 from webdav3.client import Client
 from tempfile import NamedTemporaryFile
-from dotenv import load_dotenv
 import os
 from urllib.parse import urlparse
 from tempfile import NamedTemporaryFile
 import subprocess
-import sys
-
-load_dotenv()
 
 def get_client():
     options = {
@@ -60,11 +56,11 @@ def get_file_extension(file_path):
     _, ext = os.path.splitext(tail)
     return ext[1:]
 
-def convert_file(heic_file):
-    subprocess.run(["heic2jpg", "-s", heic_file, "--keep"])
-    return change_file_extension(heic_file, "jpg")
+def convert_file(src_file):
+    subprocess.run(["convert", src_file, change_file_extension(src_file, "jpg")])
+    return change_file_extension(src_file, "jpg")
 
-def main():
+def do_extension(extension):
     client = get_client()
     assert client
 
@@ -73,18 +69,22 @@ def main():
 
     files = expand_directory(folder, client)
     files = [sanitize_path(x["path"]) for x in  files]
-    files = [x for x in  files if get_file_extension(x) == "heic"]
+    files = [x for x in  files if get_file_extension(x) == extension]
 
     for f in files:
         if not check_file(f, client):
             continue
 
-        with NamedTemporaryFile("w+", suffix=".heic") as temp_file:
+        with NamedTemporaryFile("w+", suffix=f".{extension}") as temp_file:
             download_file(f, temp_file.name, client)
             new_file = convert_file(temp_file.name)
             new_remote_path = change_file_extension(f, "jpg")
             upload_file(new_remote_path, new_file, client)
             delete_file(f, client)
+
+def main():
+    do_extension("heic")
+    do_extension("webp")
 
 if __name__ == "__main__":
     main()

@@ -1,15 +1,15 @@
-# Nextcloud HEIC converter
+# Nextcloud HEIC/WEBP converter
  
 ## Why?
 
-I could not get HEIC previews working correcly when using Nextcloud on FreeBSD.
+I could not get HEIC/WEBP previews working correcly when using Nextcloud on FreeBSD.
 So I made this script to convert them to jpg instead, which works fine for previews.
 
 ### How?
 
-This Python script uses the WebDAV protocol to convert .heic files in a given Nextcloud folder to .jpg.
-The script works by finding all .heic files in the specified folder, downloading each file, converting it to .jpg,
-then re-uploading the new jpg file back to the same location in the Nextcloud server. The original .heic file is
+This Python script uses the WebDAV protocol to convert .heic/.webp files in a given Nextcloud folder to .jpg.
+The script works by finding all .heic/.webp files in the specified folder, downloading each file, converting it to .jpg,
+then re-uploading the new jpg file back to the same location in the Nextcloud server. The original .heic/.webp file is
 subsequently deleted from the server.
 
 #### Usage
@@ -24,7 +24,7 @@ NEXTCLOUD_FOLDER: The path of the Nextcloud folder you wish to convert files in.
 ```
 
 You can run the script with Poetry:
-`poetry run nextcloud_heic_converter/main.py`
+`poetry run nextcloud_heic_webp_converter/main.py`
 
 #### Requirements
 

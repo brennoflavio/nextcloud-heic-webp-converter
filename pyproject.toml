@@ -1,18 +1,14 @@
 [tool.poetry]
-name = "nextcloud-heic-converter"
+name = "nextcloud-heic-webp-converter"
 version = "0.1.0"
 description = ""
 authors = ["brennoflavio <contato@brennoflavio.com.br>"]
 readme = "README.md"
-packages = [{include = "nextcloud_heic_converter"}]
+packages = [{include = "nextcloud_heic_webp_converter"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
 webdavclient3 = "^3.14.6"
-black = "^23.9.1"
-flake8 = "^6.1.0"
-python-dotenv = "^1.0.0"
-heic-to-jpg = "^0.1.9"
 
 
 [build-system]
